@@ -93,3 +93,7 @@ class Location(CreateTracker):
             save_data_from_arcgis(latitude=self.latitude, longitude=self.longitude, location_id=self.pk)
         else:
             save_data_from_arcgis.delay(latitude=self.latitude, longitude=self.longitude, location_id=self.pk)
+class Post(models.Model):
+    title = models.CharField(max_length=128, verbose_name='Nomi')  
+    content = models.TextField()
+    image = models.URLField()

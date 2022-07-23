@@ -17,6 +17,7 @@ def send_typing_action(func: Callable):
 
 def extract_user_data_from_update(update: Update) -> Dict:
     """ python-telegram-bot's Update instance --> User info """
+
     if update.message is not None:
         user = update.message.from_user.to_dict()
     elif update.inline_query is not None:

@@ -1,7 +1,7 @@
 import datetime
-
+from tgbot.models import Post
 from django.utils import timezone
-from telegram import ParseMode, Update
+from telegram import ParseMode, Update, InlineQueryResultArticle,  InputTextMessageContent
 from telegram.ext import CallbackContext
 
 from tgbot.handlers.onboarding import static_text
@@ -20,6 +20,29 @@ def command_start(update: Update, context: CallbackContext) -> None:
 
     update.message.reply_text(text=text,
                               reply_markup=make_keyboard_for_start_command())
+
+def search(update: Update, context: CallbackContext) -> None:
+    """Handle the inline query."""
+
+    query = update.inline_query.query
+    post = Post.objects.filter(title__icontains=query)
+   
+
+    arr = []
+
+    for i in post:
+        arr.append( 
+        InlineQueryResultArticle(
+            id=i.id,
+            title=i.title,
+            input_message_content= InputTextMessageContent(message_text =f"{i.content}"),
+            thumb_url = i.image,
+            description = i.content
+        )
+        )
+
+    
+    update.inline_query.answer(arr)
 
 
 def secret_level(update: Update, context: CallbackContext) -> None:

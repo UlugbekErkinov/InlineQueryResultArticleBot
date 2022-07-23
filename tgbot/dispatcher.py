@@ -4,13 +4,14 @@
 import sys
 import logging
 from typing import Dict
-
+from .models import Post
+from tgbot.handlers.onboarding.handlers import search
 import telegram.error
-from telegram import Bot, Update, BotCommand
+from telegram import Bot, Update, BotCommand,  InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import (
     Updater, Dispatcher, Filters,
     CommandHandler, MessageHandler,
-    CallbackQueryHandler,
+    CallbackQueryHandler,  CallbackContext, InlineQueryHandler
 )
 
 from dtb.celery import app  # event processing in async mode
@@ -26,13 +27,16 @@ from tgbot.handlers.broadcast_message.manage_data import CONFIRM_DECLINE_BROADCA
 from tgbot.handlers.broadcast_message.static_text import broadcast_command
 
 
+
+
+
 def setup_dispatcher(dp):
     """
     Adding handlers for events from Telegram
     """
     # onboarding
     dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
-
+    dp.add_handler(InlineQueryHandler(search))
     # admin commands
     dp.add_handler(CommandHandler("admin", admin_handlers.admin))
     dp.add_handler(CommandHandler("stats", admin_handlers.stats))
